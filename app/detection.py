@@ -1,14 +1,21 @@
 import torch
 import os
 import yolov5
+from app.logger import get_logger
+
+
+logger = get_logger(__name__)
+
 
 def load_model(model_path="./static/models/yolov5s.pt"):
     model = None
     if os.path.isfile(model_path):
         model = yolov5.load(model_path)
+        logger.info(f"Model loaded from {model_path}")
     else:
         model = torch.hub.load("ultralytics/yolov5", "yolov5s")
         os.rename("yolov5s.pt", "./static/models/yolov5s.pt")
+        logger.info(f"Model downloaded and saved to {model_path}")
 
     model.eval()
     return model
