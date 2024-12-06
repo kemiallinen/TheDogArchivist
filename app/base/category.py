@@ -8,3 +8,4 @@ class Category(str):
         elif self == "person":
             return "owners"
         return f"{self}s"
+    

@@ -1,0 +1,18 @@
+{
+    "camera": {
+        "resolution": [1280, 720],
+        "frame_rate": 30
+    },
+    "detection": {
+        "model_path": "./static/models/yolov5n.pt",
+        "detect_every_n_frames": 10,
+        "iou_threshold": 0.5,
+        "classes": ["dog", "person"]
+    },
+    "logging": {
+        "level": "INFO"
+    },
+    "tracker": {
+        "max_time_gap": 30
+    }
+}

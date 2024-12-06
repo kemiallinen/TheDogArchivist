@@ -4,9 +4,11 @@ from .bbox import BBox
 from .category import Category
 from app.logger import get_logger
 logger = get_logger(__name__)
+from app.config.config import Config
+cfg = Config()
 
 class Tracker:
-    def __init__(self, obj_id, bbox, category, frame, max_time_gap=30):
+    def __init__(self, obj_id, bbox, category, frame, max_time_gap=cfg.get("tracker.max_time_gap")):
         self.obj_id: int = obj_id
         self.bbox: BBox = bbox
         self.category: Category = category
@@ -44,7 +46,6 @@ class OpenCVTracker:
                 active_trackers[obj_id] = tracker
                 # logger.info(f"Tracker {obj_id} updated: {tracker.bbox.to_tuple()}")
             elif not success:
-                pass
                 logger.warning(f"Tracker {obj_id} failed to update.")
             elif not tracker.is_active():
                 self.remove_tracker(obj_id)
@@ -64,7 +65,7 @@ class OpenCVTracker:
                 bboxes[obj_id] = tracker
         return bboxes
 
-    def match_detections_to_trackers(self, detections, frame, iou_threshold=0.5):
+    def match_detections_to_trackers(self, detections, iou_threshold=cfg.get("detection.iou_threshold")):
         matched = []
         unmatched_detections = []
         unmatched_trackers = list(self.trackers.keys())
@@ -75,7 +76,7 @@ class OpenCVTracker:
 
             for tracker_id in unmatched_trackers:
                 tracker = self.trackers[tracker_id]
-                iou = compute_iou(detection.bbox.to_tuple(), tracker.bbox.to_tuple())
+                iou = detection.bbox.compute_iou(tracker.bbox)
                 if iou > best_iou and iou >= iou_threshold:
                     best_match = tracker_id
                     best_iou = iou
@@ -86,25 +87,11 @@ class OpenCVTracker:
             else:
                 unmatched_detections.append(detection)
 
-        # Nie obliczamy IoU poza powyższą pętlą, ponieważ detection jest już przypisany tylko w jej zakresie
         return matched, unmatched_detections, unmatched_trackers
 
 
-def compute_iou(box1, box2):
-    x1 = max(box1[0], box2[0])
-    y1 = max(box1[1], box2[1])
-    x2 = min(box1[0] + box1[2], box2[0] + box2[2])
-    y2 = min(box1[1] + box1[3], box2[1] + box2[3])
-
-    inter_area = max(0, x2 - x1) * max(0, y2 - y1)
-    box1_area = box1[2] * box1[3]
-    box2_area = box2[2] * box2[3]
-
-    iou = inter_area / float(box1_area + box2_area - inter_area) if box1_area + box2_area - inter_area > 0 else 0
-    return iou
-
 def update_trackers_with_yolo(frame, detections, tracker):
-    matched, unmatched_detections, unmatched_trackers = tracker.match_detections_to_trackers(detections, frame)
+    matched, unmatched_detections, unmatched_trackers = tracker.match_detections_to_trackers(detections)
 
     for tracker_id, detection in matched:
         tracker.trackers[tracker_id].bbox = detection.bbox

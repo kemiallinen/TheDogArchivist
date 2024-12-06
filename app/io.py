@@ -2,7 +2,7 @@ import cv2
 import os
 from datetime import datetime
 from app.logger import get_logger
-from database import add_or_update_dog
+from app.database import add_or_update_dog
 
 logger = get_logger(__name__)
 

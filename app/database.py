@@ -2,8 +2,6 @@ import sqlite3
 import os
 from flask import Flask
 from app.logger import get_logger
-
-
 logger = get_logger(__name__)
 
 
