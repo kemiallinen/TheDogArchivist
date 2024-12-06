@@ -120,5 +120,11 @@ Example config.json:
 Contributions are welcome! Feel free to open issues or submit pull requests to improve the project.
 
 ---
+## 🧠 Acknowledgments
+This project wouldn't have been possible without the invaluable support of **ChatGPT**, the tireless co-author and debugging assistant. Together, we debugged errors, implemented new features, and made The Dog Archivist smarter, faster, and more robust. 🎉
+
+If you have any questions or feedback, feel free to reach out!
+
+---
 ## 📜 License
 This project is licensed under the MIT License. See LICENSE for more details.
