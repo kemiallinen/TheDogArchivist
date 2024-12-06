@@ -34,7 +34,7 @@ sudo apt install python3-pip libopencv-dev
 2. **Clone the repository:**
 
 ```
-git clone https://github.com/YourRepository/TheDogArchivist.git
+git clone https://github.com/kemiallinen/TheDogArchivist.git
 cd TheDogArchivist
 ```
 3. **Set up a virtual environment:**
